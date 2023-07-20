@@ -8,7 +8,7 @@ import {
   MDBSpinner,
   MDBBadge,
 } from "mdb-react-ui-kit";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import axios from "axios";
 import SimpleMap from "./Map";
 
@@ -86,8 +86,10 @@ export default function Card({ listeColorRegion }) {
               </MDBCardText>
 
               <ul>
-                {country.borders.map((bor) => (
-                  <li key={bor}>{bor}</li>
+                {country.borders.map((codep) => (
+                  <li key={codep}>
+                    <NavLink to={`/paycode/${codep}`}>{codep}</NavLink>
+                  </li>
                 ))}
               </ul>
 

@@ -10,6 +10,7 @@ import axios from "axios";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Error404 from "./components/Error404";
 import Card from "./components/Card";
+import Paycode from "./components/Paycode";
 
 function App() {
   const [listPays, setListPays] = useState([]);
@@ -60,7 +61,11 @@ function App() {
             <Route
               path="/"
               element={
-                <Corps key="A" listePaysProps={listPays} listeColorRegion={colorRegions} />
+                <Corps
+                  key="A"
+                  listePaysProps={listPays}
+                  listeColorRegion={colorRegions}
+                />
               }
             />
             <Route
@@ -77,6 +82,8 @@ function App() {
               path="/card/:name"
               element={<Card listeColorRegion={colorRegions} />}
             />
+            <Route path="/paycode/:codepays" element={<Paycode />} />
+
             <Route path="*" element={<Error404 />} />
           </Routes>
         ) : (
