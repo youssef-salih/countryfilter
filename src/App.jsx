@@ -1,3 +1,5 @@
+//AIzaSyA8yin2m5utSLVbgSYNZ_pcopSbP4Xvu2U
+
 import "./App.css";
 import Corps from "./components/Corps";
 import Footer from "./components/Footer";
@@ -58,11 +60,7 @@ function App() {
             <Route
               path="/"
               element={
-                <Corps
-                  key="A"
-                  listePaysProps={listPays}
-                  listeColorRegion={colorRegions}
-                />
+                <Corps key="A" listePaysProps={listPays} listeColorRegion={colorRegions} />
               }
             />
             <Route
