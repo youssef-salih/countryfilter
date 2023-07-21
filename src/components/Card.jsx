@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   MDBCard,
   MDBCardBody,
@@ -12,17 +12,23 @@ import { NavLink, useParams } from "react-router-dom";
 import axios from "axios";
 import SimpleMap from "./Map";
 
-export default function Card({ listeColorRegion }) {
-  const { name } = useParams();
-  const [country, setCountry] = useState(null);
-  const [weather, setWeather] = useState(null);
+export default function Card({ listeColorRegion, nameProp }) {
+  let { name } = useParams();
+  name = name ? name : nameProp;
+  const [country, setCountry] = useState();
+  const [weather, setWeather] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [isImageClicked, setIsImageClicked] = useState(false);
+  const handleImageClick = () => {
+    setIsImageClicked(true);
+  };
 
   useEffect(() => {
     setIsLoading(true);
     axios
       .get(`https://restcountries.com/v3.1/name/${name}`)
       .then((res) => {
+        console.log(res.data);
         setCountry(res.data[0]);
         setIsLoading(false);
       })
@@ -57,41 +63,54 @@ export default function Card({ listeColorRegion }) {
       ) : country ? (
         <div key={country.name.common}>
           <MDBCard className="mb-3 w-50 mx-auto mt-4">
-            <SimpleMap
-              lat={country.capitalInfo.latlng[0]}
-              lng={country.capitalInfo.latlng[1]}
-            />
-            <MDBCardImage
-              className=""
-              position="top"
-              src={country.flags.png}
-              alt={country.flags.alt}
-            />
+            <div className="position-relative">
+              <SimpleMap
+                lat={country.capitalInfo.latlng[0]}
+                lng={country.capitalInfo.latlng[1]}
+              />
+              <MDBCardImage
+                className={`position-absolute top-0 ${
+                  isImageClicked ? "d-none" : ""
+                }`}
+                position="top"
+                src={country.flags.png}
+                alt={country.flags.alt}
+                onClick={handleImageClick}
+              />
+            </div>
 
             <MDBCardBody className="">
               <MDBCardTitle>{country.name.common}</MDBCardTitle>
               <MDBCardText>{country.name.official}</MDBCardText>
-              <MDBCardText>
-                <MDBBadge
-                  pill
-                  light
-                  color={
-                    listeColorRegion.find(
-                      (elemRegion) => elemRegion.region === country.region
-                    )?.color
-                  }
-                >
-                  {country.region}
-                </MDBBadge>
+              <MDBCardText className="d-flex">
+                {listeColorRegion ? (
+                  <MDBBadge
+                    pill
+                    light
+                    color={
+                      listeColorRegion.find(
+                        (elemRegion) => elemRegion.region === country.region
+                      )?.color
+                    }
+                  >
+                    {country.region}
+                  </MDBBadge>
+                ) : (
+                  ""
+                )}
               </MDBCardText>
 
-              <ul>
-                {country.borders.map((codep) => (
-                  <li key={codep}>
-                    <NavLink to={`/paycode/${codep}`}>{codep}</NavLink>
-                  </li>
-                ))}
-              </ul>
+              {country && country.borders && country.borders.length > 0 ? (
+                <ul>
+                  {country.borders.map((codep) => (
+                    <li key={codep}>
+                      <NavLink to={`/paycode/${codep}`}>{codep}</NavLink>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No border countries found.</p>
+              )}
 
               {weather ? (
                 <div>
