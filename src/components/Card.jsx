@@ -20,7 +20,7 @@ export default function Card({ listeColorRegion, nameProp }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isImageClicked, setIsImageClicked] = useState(false);
   const handleImageClick = () => {
-    setIsImageClicked(true);
+    isImageClicked ? setIsImageClicked(false) : setIsImageClicked(true);
   };
 
   useEffect(() => {
@@ -72,6 +72,7 @@ export default function Card({ listeColorRegion, nameProp }) {
                 className={`position-absolute top-0 ${
                   isImageClicked ? "d-none" : ""
                 }`}
+                style={{ height: "40vh" }}
                 position="top"
                 src={country.flags.png}
                 alt={country.flags.alt}
@@ -80,7 +81,18 @@ export default function Card({ listeColorRegion, nameProp }) {
             </div>
 
             <MDBCardBody className="">
-              <MDBCardTitle>{country.name.common}</MDBCardTitle>
+              <MDBCardTitle className="d-flex justify-content-between">
+                {country.name.common}{" "}
+                {isImageClicked ? (
+                  <img
+                    src={country.flags.png}
+                    width={50}
+                    onClick={handleImageClick}
+                  />
+                ) : (
+                  ""
+                )}
+              </MDBCardTitle>
               <MDBCardText>{country.name.official}</MDBCardText>
               <MDBCardText className="d-flex">
                 {listeColorRegion ? (
