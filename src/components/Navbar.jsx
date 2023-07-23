@@ -14,12 +14,37 @@ import {
   MDBDropdownMenu,
   MDBDropdownItem,
   MDBCollapse,
+  MDBBadge,
 } from "mdb-react-ui-kit";
 import vite from "../assets/react.svg";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
+import axios from "axios";
 
 const Navbar = () => {
   const [showBasic, setShowBasic] = useState(false);
+  const [regions, setRegions] = useState([]);
+
+  const removeDuplicates = (list) => {
+    const uniqueSet = new Set(list.map((region) => region.region));
+    const uniqueList = [...uniqueSet];
+    const uniqueRegions = uniqueList.map((regionName) =>
+      list.find((region) => region.region === regionName)
+    );
+    return uniqueRegions;
+  };
+
+  useEffect(() => {
+    axios
+      .get("https://restcountries.com/v3.1/all?fields=region")
+      .then((res) => {
+        const regionsData = res.data;
+        const filteredRegions = removeDuplicates(regionsData);
+        const regionValues = filteredRegions.map((region) => region.region);
+        setRegions(regionValues);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <>
       <MDBNavbar expand="lg" light bgColor="light">
@@ -40,31 +65,23 @@ const Navbar = () => {
           <MDBCollapse navbar show={showBasic}>
             <MDBNavbarNav className="mr-auto mb-2 mb-lg-0">
               <MDBNavbarItem>
-                <MDBNavbarLink href="#">Link</MDBNavbarLink>
-              </MDBNavbarItem>
-
-              <MDBNavbarItem>
                 <MDBDropdown>
                   <MDBDropdownToggle tag="a" className="nav-link" role="button">
-                    Dropdown
+                    {"region"}
                   </MDBDropdownToggle>
-                  <MDBDropdownMenu>
-                    <MDBDropdownItem link>Action</MDBDropdownItem>
-                    <MDBDropdownItem link>Another action</MDBDropdownItem>
-                    <MDBDropdownItem link>Something else here</MDBDropdownItem>
+                  <MDBDropdownMenu className="">
+                    {regions
+                      ? regions.map((cont) => (
+                          <MDBDropdownItem
+                            key={cont}
+                            className="text-center p-2"
+                          >
+                            <NavLink to={`/regions/${cont}`}> {cont}</NavLink>
+                          </MDBDropdownItem>
+                        ))
+                      : ""}
                   </MDBDropdownMenu>
                 </MDBDropdown>
-              </MDBNavbarItem>
-
-              <MDBNavbarItem>
-                <MDBNavbarLink
-                  disabled
-                  href="#"
-                  tabIndex={-1}
-                  aria-disabled="true"
-                >
-                  Disabled
-                </MDBNavbarLink>
               </MDBNavbarItem>
             </MDBNavbarNav>
 

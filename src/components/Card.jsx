@@ -11,12 +11,13 @@ import {
 import { NavLink, useParams } from "react-router-dom";
 import axios from "axios";
 import SimpleMap from "./Map";
+import Meteo from "./Meteo";
 
-export default function Card({ listeColorRegion, nameProp }) {
+export default function Card({ listeColorRegion, namePaysProps }) {
   let { name } = useParams();
-  name = name ? name : nameProp;
+  name = name ? name : namePaysProps;
   const [country, setCountry] = useState();
-  const [weather, setWeather] = useState();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isImageClicked, setIsImageClicked] = useState(false);
   const handleImageClick = () => {
@@ -30,22 +31,6 @@ export default function Card({ listeColorRegion, nameProp }) {
       .then((res) => {
         console.log(res.data);
         setCountry(res.data[0]);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsLoading(false);
-      });
-  }, [name]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    axios
-      .get(
-        `https://api.weatherapi.com/v1/current.json?key=d35523a118ed4a538b6111306232007&q=${name}&aqi=no`
-      )
-      .then((res) => {
-        setWeather(res.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -82,7 +67,7 @@ export default function Card({ listeColorRegion, nameProp }) {
 
             <MDBCardBody className="">
               <MDBCardTitle className="d-flex justify-content-between">
-                {country.name.common}{" "}
+                {country.name.common}
                 {isImageClicked ? (
                   <img
                     src={country.flags.png}
@@ -124,20 +109,7 @@ export default function Card({ listeColorRegion, nameProp }) {
                 <p>No border countries found.</p>
               )}
 
-              {weather ? (
-                <div>
-                  <h3>Weather Information</h3>
-                  <p>Temperature: {weather.current.temp_c}°C</p>
-                  <p>Condition: {weather.current.condition.text}</p>
-                  <img
-                    src={weather.current.condition.icon}
-                    alt={weather.current.condition.text}
-                  />
-                  <p>Humidity: {weather.current.humidity}%</p>
-                </div>
-              ) : (
-                <p>No weather information available.</p>
-              )}
+              <Meteo isLoading={isLoading} setIsLoading={setIsLoading} />
             </MDBCardBody>
           </MDBCard>
         </div>

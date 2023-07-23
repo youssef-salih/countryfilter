@@ -11,6 +11,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Error404 from "./components/Error404";
 import Card from "./components/Card";
 import Paycode from "./components/Paycode";
+import Api from "./components/Api";
+import Swipper from "./components/Swipper";
 
 function App() {
   const [listPays, setListPays] = useState([]);
@@ -83,6 +85,7 @@ function App() {
               element={<Card listeColorRegion={colorRegions} />}
             />
             <Route path="/paycode/:codepays" element={<Paycode />} />
+            <Route path="/regions/:country" element={<Swipper />} />
 
             <Route path="*" element={<Error404 />} />
           </Routes>
